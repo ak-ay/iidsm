@@ -5,9 +5,29 @@ document.addEventListener("DOMContentLoaded", () => {
   forms.forEach((form) => {
     const success = form.querySelector(".form-success");
 
-    form.addEventListener("submit", () => {
-      if (success) {
-        success.style.display = "block";
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const formData = new FormData(form);
+
+      try {
+        const response = await fetch(form.action, {
+          method: "POST",
+          body: formData,
+          headers: {
+            Accept: "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Submission failed");
+        }
+
+        if (success) {
+          success.style.display = "block";
+        }
+        form.reset();
+      } catch (error) {
+        alert("Something went wrong. Please try again or call us at +91 85900 20595.");
       }
     });
   });
